@@ -1,0 +1,383 @@
+<html>
+  <head>
+  
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Noticia+Text:400,400i,700,700i&display=swap" rel="stylesheet">
+
+      <link
+    rel="stylesheet"
+    href="prism-atom-dark.css"
+    type="text/css"
+    media="screen"
+  />
+
+  <script type="text/javascript" src="prism.js"></script>
+  <script type="text/javascript" src="prism.ruby.js"></script>
+
+  <title>Jonathan Garton</title>
+   <meta name="description" content="Jonathan Garton is a professional software engineer specializing in full-stack development. He has extensive experience with Ruby, Rails, JavaScript, and building web applications.">
+
+  </head>
+
+  <body>
+    <div class="about-container">
+      <ul>
+        <li><a href="#" class="nav-link">About</a></li>
+        <li><a href="#code-samples" class="nav-link">Code Samples<a/></li>
+        <li><a href="#web-apps" class="nav-link">Web Apps<a/></li>
+        <li><a href="#skills-and-tools" class="nav-link">Skills &amp; Tools</a></li>
+          <li class="hire-me"><a href="#hire-me" class="nav-link">HIRE ME</a></li>
+      </ul>
+
+    <div class="about">
+      <img src="me.jpg" class="me" />
+
+      <h1>Jonathan Garton</h1>
+
+
+      <h2>Chemical Engineer/Software Engineer</h2>
+
+      <hr class="grey"/>
+      <p class="bio">
+        Jonathan Garton is a skilled chemical engineer with years of experience in a research and industrial manufacturing environment. After obtaining a degree from the Colorado School of Mines in chemical engineering with a minor in business and economics, Jonathan completed an accelerated course at Denver University diversifying his skillset as a sofware engineer and web developer.
+      </p>
+  </div>
+</div>
+
+<h3 id="code-samples">Code Samples</h3>
+<hr class="yellow">
+
+<div class="box">
+  <h4>Image Blur</h4>
+ <p>
+    This Ruby program will takes a 2D array of zeros and ones. It will then search the array for ones, in which case it will convert all zeros up, down, to the left, and to the right (including diagonals) to ones. This simulates the blurring of pixels in an image.
+  </p>
+</div>
+
+<div class="box">
+<pre><code class="language-ruby">n = 0
+class Image
+  attr_accessor :image
+  def initialize(data)
+      raise ArgumentError, &quot;data must be an array&quot; if not data.is_a? Array
+      @data = data
+  end
+  def can?(x,y)
+    return true if  y &gt;= 0 and y &lt; @data.length and x &gt;= 0 and x &lt; @data[y].length
+    return false
+  end
+  def write_cross(ni,dist,row,col)
+    [-1,0,1].each do |dir|
+      (dist+1).times do |d|
+        nx          = col + (d * dir)
+        ny          = row + (d * dir)
+        ni[ny][col] = 1 if can?(ny,col)
+        ni[row][nx] = 1 if can?(row,nx)
+      end
+    end
+    return ni
+  end
+  def write_x(ni,dist,row,col)
+    [-1,0,1].each do |dir|
+      (dist/2+1).times do |d|
+        nx      = col + (d * dir)
+        ny      = row + (d * dir)
+        ni[ny][nx] = 1 if can?(ny,nx)
+        nx      = col - (d * dir)
+        ny      = row - (d * dir)
+        ni[ny][nx] = 1 if can?(ny,nx)
+        nx      = col + (d * dir)
+        ny      = row - (d * dir)
+        ni[ny][nx] = 1 if can?(ny,nx)
+        nx      = col - (d * dir)
+        ny      = row + (d * dir)
+        ni[ny][nx] = 1 if can?(ny,nx)
+      end
+    end
+    return ni
+  end
+  def blur(dist=1)
+    ni = @data.collect { |row| row.collect { 0 } }
+    (@data.length).times do |row|
+      (@data[row].length).times do |col|
+        if @data[row][col] == 1 then
+          ni = write_cross(ni,dist,row,col)
+          ni = write_x(ni,dist,row,col)
+        end
+      end
+    end
+    @data = ni
+  end
+  def get_image
+    return @data.map { |row| row.map { |col| col == 1 ? &quot;\u{25A1}&quot; : '*' }}.collect { |row| row.join(&quot; &quot;) }.join(&quot;\n&quot;)
+  end
+  def output_image
+    puts get_image
+  end
+end
+
+i = Image.new([
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 1, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+]);
+3.times do |x|
+  i.blur(x)
+  i.output_image
+  sleep(1)
+end
+</code></pre>
+
+</div>
+
+
+<br class="clear"/>
+
+
+<div class="box">
+  <pre><code class="language-ruby">n = 0
+class LinkedListNode
+    attr_accessor :value,:next_node
+    def initialize(value,nxt=nil)
+        @value = value
+        @next_node = nxt
+    end
+end
+class Stack
+    attr_accessor :data
+
+    def initialize
+        @data = nil
+    end
+
+    def push(value)
+        @data = LinkedListNode.new(value,@data)
+    end
+
+    def pop
+       v = @data.value
+       @data = @data.next_node
+       return v
+    end
+    
+    def reverse_with_stack(head)
+        s = Stack.new
+        while head
+            s.push head.value
+            head = head.next_node
+        end
+        return s.data
+    end
+    def reverse_iterative(head)
+        current = head
+        prev = nil
+        while current do
+            nxt = current.next_node
+            current.next_node = prev
+            prev = current
+            current = nxt
+        end
+        head = prev
+        return head
+    end
+    def reverse(head,prev=nil)
+        if head.next_node.nil? then
+            head.next_node = prev
+            return head
+        end
+        current = head.next_node
+        head.next_node = prev
+        return reverse(current,head)
+    end
+
+end
+s = Stack.new
+[1,2,3].each do |i|
+    s.push i
+end
+#s.data = s.reverse(s.data)
+s.data = s.reverse_iterative(s.data)
+#s.data = s.reverse_with_stack(s.data)
+
+3.times do |i|
+    puts s.pop
+end
+    </code></pre>
+</div>
+
+<div class="box">
+    <h4>Data Structures: Linked List</h4>
+  <p>
+    This Ruby program works with reverses linked lists in three different ways. The first way is using a data stack as a class to reverse the list. The second way uses interation, and the third uses mutation. Although this problem was solved using three different methods, the outcome is the same once the function is called.
+</div>
+
+<br class="clear" />
+<div class="box">
+   <h4>Foobar: Ruby</h4>
+  <p>
+    This program is an adaptation of a classic technical
+    interview problem which displays sequences
+    of the Foobar pattern.
+  </p>
+</div>
+
+<div class="box">
+  <pre><code class="language-ruby">n = 0
+def foobar(i)
+  return &quot;foobar&quot; if i % 3 == 0 &amp;&amp; i % 5 == 0
+  return &quot;foo&quot; if i % 3 == 0
+  return &quot;bar&quot; if i % 5 ==0
+  return i
+end
+
+puts &quot;How many?&quot;
+
+(gets.to_i).times do |i|
+  puts foobar(i+1)
+end
+
+  </code></pre>
+</div>
+
+<br class="clear" />
+
+<div class="box">
+  <pre><code class="language-ruby">n = 0
+var readlineSync = require('readline-sync');
+var input = readlineSync.question(&quot;How many in the Foobar sequence do you want to see? &quot;);
+
+for (var iteration = 1; iteration &lt;= Number(input); iteration++) {
+if (iteration % 3 === 0 &amp;&amp; iteration % 5 === 0) {
+  console.log(&quot;Foobar&quot;)
+}
+ else if (iteration % 3 === 0) {
+  console.log(&quot;Foo&quot;);
+}
+else if (iteration % 5 === 0){
+  console.log(&quot;Bar&quot;)
+}
+else {
+  console.log(iteration)
+  }
+}
+
+    </code></pre>
+</div>
+
+<div class="box">
+    <h4>Foobar: Javascript</h4>
+  <p>
+     This program is an adaptation of a classic technical
+    interview problem which displays sequences
+    of the Foobar pattern.
+</div>
+
+<br class="clear" />
+
+
+<h3 id="web-apps">Web Apps</h3>
+
+<hr class="yellow"/>
+
+<div class="box">
+  <h4><a href="https://splurty-jonathan-garton.herokuapp.com">Quote Generator</h4></a>
+  <img src="splurty.png" class="full-width"/>
+  <p>
+          A database-powered quote generator with a mobile-first
+          design, using the Ruby on Rails framework, HTML, and CSS.
+          Uses Git and GitHub for version control, and launched
+          on Heroku.
+      </p>
+</div>
+ <div class="box">
+      <h4><a href="https://nomster-jonathan-garton.herokuapp.com">Yelp Clone</h4></a>
+      <img src="nomster.png" class="full-width" />
+      <p>
+        A Yelp clone that integrates with the Google Maps API
+        and includes features like user comments, star ratings,
+        image uploading, and user authentication.
+      </p>
+    </div>
+    <br class="clear" />
+
+    <div class="box">
+      <h4><a href="https://flixter-jonathan-garton.herokuapp.com/">Two-Sided Market Place</h4></a>
+      <img src="flixter.png" class="full-width" />
+      <p>
+        A two-sided, video-streaming marketplace platform that
+        features credit card payment capabilities, user role
+        management, complex user interfaces, and advanced
+        database relationships.
+      </p>
+    </div>
+    <div class="box">
+      <h4><a href="https://grammable-jonathan-garton.herokuapp.com">Test Driven Development</h4></a>
+      <img src="grammable.png" class="full-width" />
+      <p>
+        An Instagram clone that was built using industry-standard, test-driven
+        development following numerous red/green/refactor cycles.
+      </p>
+    </div>
+    <br class="clear" />
+    <div class="box">
+      <h4><a href="https://spa-jonathan-garton.herokuapp.com">Single Page Todo Application</h4></a>
+      <img src="todoster.png" class="full-width" />
+      <p>
+        This single-page to-do application features a
+        fluid user interface that– by using JavaScript–
+        allows users to rapidly add dynamic content.
+      </p>
+    </div>
+    <div class="box">
+      <h4><a href="https://mello-rails-api-complete.herokuapp.com">Project Board</h4></a>
+      <img src="trellopage.png" class="full-width" />
+      <p>
+        This application was taken from Trello, and is similar to the project boards on Github. It allows users to create projects, and within those projects create tasks. The user can create stages of completion (Not Started, In Progress, Finished etc.). The project markers can then be moved to the proper stage of the completion process.
+      </p>
+    </div>
+    <br class="clear" />
+
+
+    <h3 id="skills-and-tools">Skills &amp; Tools</h3>
+
+    <hr class="yellow" />
+       <p class="skills-and-tools">
+      Jonathan has developed proficiency and expertise in the following programming languages and comfort with the following tools.
+    </p>
+   <div class="icons">
+      <img src="github.png" class="icon" />
+      <img src="rubocop.png" class="icon" />
+      <img src="trello.png" class="icon" />
+      <img src="slack.png" class="icon" />
+      <img src="codeship.png" class="icon" />
+
+    <br class="clear" />
+      <img src="skills.png" class="icon" />
+  </div>
+
+ <div class="contact-me" id="hire-me">
+  <h3 class="contact-headline">Contact</h3>
+  <hr class="yellow" />
+  <p class="contact-info">
+    Currently entertaining new opportunities.
+    Please get in touch via email:
+  </p>
+
+  <p>
+    <a href="mailto:jon.garton94@gmail.com" class="contact-link"> jon.garton94@gmail.com
+    </a>
+  </P>
+ </div>
+
+  </body>
+
+</html>
